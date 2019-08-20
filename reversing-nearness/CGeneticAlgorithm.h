@@ -13,7 +13,7 @@ public:
 	CGeneticAlgorithm(unsigned long populationSize, unsigned long numberOfParents, unsigned short n);
 	~CGeneticAlgorithm();
 
-	unsigned long long go();
+	shared_ptr<CGrid> go();
 
 private:
 	unsigned long populationSize;

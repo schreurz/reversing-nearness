@@ -20,9 +20,10 @@ int main()
 	cout << "Hello CMake." << endl;
 	CGeneticAlgorithm genAlg(POPULATION_SIZE, NUMBER_OF_PARENTS, N);
 
-	unsigned long long score = genAlg.go();
+	shared_ptr<CGrid> best = genAlg.go();
 
-	cout << "Best score: " << score << endl;
+	cout << "Best score: " << best->getScore() << endl;
+	cout << *best << endl;
 
 	return 0;
 }

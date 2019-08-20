@@ -27,7 +27,7 @@ CGeneticAlgorithm::~CGeneticAlgorithm()
 {
 }
 
-unsigned long long CGeneticAlgorithm::go()
+shared_ptr<CGrid> CGeneticAlgorithm::go()
 {
 	// choose parents
 	sort(this->population.begin(), this->population.end(), 
@@ -46,5 +46,5 @@ unsigned long long CGeneticAlgorithm::go()
 
 	// repeat
 
-	return 0;
+	return this->population.front();
 }
