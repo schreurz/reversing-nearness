@@ -1,15 +1,14 @@
 #include "CGrid.h"
 
 #include <iostream>
+#include <numeric>
 
 CGrid::CGrid(const unsigned short n)
 {
 	this->n = n;
 	unsigned long elementsLength = n * n;
-	this->elements = vector<unsigned short>(elementsLength, 0);
-	for (unsigned short i = 0; i < elements.size(); i++) {
-		elements[i] = i;
-	}
+	this->elements = vector<unsigned short>(elementsLength);
+	iota(this->elements.begin(), this->elements.end(), 0);
 	this->score = evaluate();
 }
 

@@ -17,7 +17,9 @@ int main()
 	cout << "Hello CMake." << endl;
 	CGeneticAlgorithm genAlg(10, N);
 
-	genAlg.go();
+	unsigned long long score = genAlg.go();
+
+	cout << "Best score: " << score << endl;
 
 	return 0;
 }
