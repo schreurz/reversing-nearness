@@ -126,3 +126,4 @@ ostream& operator<<(ostream& out, const CGrid& grid)
 
 	return out;
 }
+
