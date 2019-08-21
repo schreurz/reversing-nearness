@@ -66,6 +66,11 @@ unsigned short CGrid::getN() const
 	return this->n;
 }
 
+vector<unsigned short> CGrid::gridData() const
+{
+	return vector<unsigned short>(this->elements.begin(), this->elements.end());
+}
+
 unsigned long long CGrid::distanceSq(unsigned short i, unsigned short j, unsigned short n) const
 {
 	unsigned long long x1, x2, y1, y2;

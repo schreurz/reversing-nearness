@@ -21,6 +21,7 @@ public:
 
 	unsigned long long getScore() const;
 	unsigned short getN() const;
+	vector<unsigned short> gridData() const;
 
 	friend ostream& operator << (ostream& out, const CGrid& grid);
 

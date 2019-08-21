@@ -10,7 +10,7 @@
 
 using namespace std;
 
-static const unsigned short N = 6;
+static const unsigned short N = 3;
 
 static const unsigned long POPULATION_SIZE = 10000;
 static const unsigned long NUMBER_OF_PARENTS = 100;
