@@ -64,15 +64,21 @@ vector<shared_ptr<PermutationNode>> permutationGroups(vector<unsigned short> dat
 	return group;
 }
 
-//TODO needs fixing, does not work when two permutations are not mutually exclusive.
-void applyPermutation(vector<unsigned short>& data, const shared_ptr<PermutationNode>& permutation) {
-	unsigned short stop = permutation->val;
-	data[stop] = permutation->next->val;
-	shared_ptr<PermutationNode> cur = permutation->next;
-	while (cur->val != stop) {
-		data[cur->val] = cur->next->val;
+vector<unsigned short> applyPermutation(const vector<unsigned short>& data, const shared_ptr<PermutationNode>& permutation) {
+	vector<unsigned short> mutated(data);
+	const unsigned short stop = permutation->val;
+
+	shared_ptr<PermutationNode> cur = permutation;
+	while (true) {
+		mutated[cur->next->val] = data[cur->val];
+		
 		cur = cur->next;
+		if (cur->val == stop) {
+			break;
+		}
 	}
+
+	return mutated;
 }
 
 vector<unsigned short> crossOver(vector<shared_ptr<PermutationNode>> p1, vector<shared_ptr<PermutationNode>> p2, unsigned long size) {
@@ -80,45 +86,57 @@ vector<unsigned short> crossOver(vector<shared_ptr<PermutationNode>> p1, vector<
 	iota(values.begin(), values.end(), 0);
 
 	for (auto i = 0; i < p1.size() / 2; i++) {
-		applyPermutation(values, p1[i]);
+		values = applyPermutation(values, p1[i]);
 	}
 
 	for (auto i = 0; i < p2.size() / 2; i++) {
-		applyPermutation(values, p2[i]);
+		values = applyPermutation(values, p2[i]);
 	}
 
 	return values;
 }
 
+const long max_generations = 1000;
+
 shared_ptr<CGrid> CGeneticAlgorithm::go()
 {
-	// choose parents
-	sort(this->population.begin(), this->population.end(), 
-		[](shared_ptr<CGrid> l, shared_ptr<CGrid> r) { 
-			return (l->getScore() < r->getScore()); 
-		});
 
-	// create new population from parents
-	vector<shared_ptr<CGrid>> parents(this->population.begin(), this->population.begin() + this->numberOfParents);
+	for (auto generation = 0; generation < max_generations; generation++) {
+		// choose parents
+		sort(this->population.begin(), this->population.end(),
+			[](shared_ptr<CGrid> l, shared_ptr<CGrid> r) {
+				return (l->getScore() < r->getScore());
+			});
 
-	transform(parents.begin(), parents.end() - 1, parents.begin() + 1, this->population.begin(),
-		[this](shared_ptr<CGrid> p1, shared_ptr<CGrid> p2) {
-			// this is where we create the next generation
-			vector<unsigned short> p1Data = p1->gridData();
-			vector<unsigned short> p2Data = p2->gridData();
+		// create new population from parents
+		const vector<shared_ptr<CGrid>> parents(this->population.begin(), this->population.begin() + this->numberOfParents);
 
-			vector<shared_ptr<PermutationNode>> group1 = permutationGroups(p1Data);
-			vector<shared_ptr<PermutationNode>> group2 = permutationGroups(p2Data);
-			
+		vector<shared_ptr<CGrid>> nextGeneration(this->populationSize);
+
+		for (auto i = 0; i < this->populationSize; i++) {
+			auto parent1 = parents[rand() % parents.size()];
+			auto parent2 = parents[rand() % parents.size()];
+
+			vector<shared_ptr<PermutationNode>> group1 = permutationGroups(parent1->gridData());
+			vector<shared_ptr<PermutationNode>> group2 = permutationGroups(parent2->gridData());
+
 			unsigned long gridSize = this->n * this->n;
-			
-			vector<unsigned short> newGen = crossOver(group1, group2, gridSize);
+			shared_ptr<CGrid> newOrg = make_shared<CGrid>(crossOver(group1, group2, gridSize), this->n);
 
-			return make_shared<CGrid>(newGen, this->n);
+			while (rand() % 5 != 0) {
+				newOrg = newOrg->swap(rand() % gridSize, rand() % gridSize);
+			}
+
+			nextGeneration[i] = newOrg;
 		}
-	);
 
-	// repeat
+		this->population = nextGeneration;
+	}
+
+	sort(this->population.begin(), this->population.end(),
+		[](shared_ptr<CGrid> l, shared_ptr<CGrid> r) {
+			return (l->getScore() < r->getScore());
+		});
 
 	return this->population.front();
 }

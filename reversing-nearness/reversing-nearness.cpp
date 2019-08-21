@@ -10,10 +10,10 @@
 
 using namespace std;
 
-static const unsigned short N = 3;
+static const unsigned short N = 4;
 
 static const unsigned long POPULATION_SIZE = 10000;
-static const unsigned long NUMBER_OF_PARENTS = 100;
+static const unsigned long NUMBER_OF_PARENTS = 10;
 
 int main()
 {
